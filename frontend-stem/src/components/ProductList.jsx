@@ -412,9 +412,14 @@ function ProductCard({ product }) {
   const showPlaceholder =
     !currentImg || imgError
 
-  const productPath = product.id
-    ? `/product/${product.id}`
-    : null
+  // Static Xerox products already contain all data in frontend.
+  // They do not need a backend ProductDetail route.
+  const productPath =
+    product.staticProduct
+      ? null
+      : product.id
+        ? `/product/${product.id}`
+        : null
 
   const handleClose = useCallback(
     () => setShowModal(false),
