@@ -12,11 +12,17 @@ export default function ThirdPage() {
     { id: 4, title: t.electro_stanki,    image: '/img/pagethird/stanki.png', path: '/electro/stanki' },
     { id: 5, title: t.electro_bytovaya,  image: '/img/pagethird/tech.png',   path: '/electro/bytovaya' },
     { id: 6, title: t.electro_printers,  image: '/img/pagethird/print.png',  path: '/electro/printers3d' },
+
+    {
+      id: 7,
+      title: 'Принтеры и МФУ Xerox',
+      image: '/img/xerox/xerox-b225dni.png',
+      path: '/category/xerox-printers',
+    },
   ]
 
   return (
     <div className="third-page">
-
       <div className="third-breadcrumb">
         <Link to="/" className="breadcrumb-link">{t.home}</Link>
         <span> / </span>
@@ -25,7 +31,9 @@ export default function ThirdPage() {
 
       <div className="third-content__header">
         <h1 className="third-content__title">{t.electro}</h1>
-        <span className="third-content__count">{t.found} {items.length} {t.found_categories}</span>
+        <span className="third-content__count">
+          {t.found} {items.length} {t.found_categories}
+        </span>
       </div>
 
       <div className="third-grid">
@@ -38,7 +46,6 @@ export default function ThirdPage() {
           </Link>
         ))}
       </div>
-
     </div>
   )
 }
