@@ -6,12 +6,12 @@ export default function EquipmentPage() {
   const { t } = useLang()
 
   const categories = [
-    { title: 'ARDUINO',         img: '/img/equipment/arduino.png',   path: '/equipment/arduino' },
-    { title: 'LEGO SPIKE',      img: '/img/equipment/legospike.png', path: '/equipment/legospike' },
-    { title: 'LABDISC',         img: '/img/equipment/labdisc.png',   path: '/equipment/labdisc' },
-    { title: 'ULAB',            img: '/img/equipment/ulab.png',      path: '/equipment/ulab' },
-    { title: t.equipment_soon,  img: null,                           path: '#' },
-    { title: t.equipment_soon,  img: null,                           path: '#' },
+    { title: 'ARDUINO', img: '/img/equipment/arduino.png', path: '/equipment/arduino' },
+    { title: 'LEGO SPIKE', img: '/img/equipment/legospike.png', path: '/equipment/legospike' },
+    { title: 'LABDISC', img: '/img/equipment/labdisc.png', path: '/equipment/labdisc' },
+    { title: 'ULAB', img: '/img/equipment/ulab.png', path: '/equipment/ulab' },
+    { title: 'SENSORIUM', img: '/img/equipment/sensorium.png', path: '/equipment/sensorium' },
+    { title: t.equipment_soon, img: null, path: '#' },
   ]
 
   return (
@@ -25,7 +25,9 @@ export default function EquipmentPage() {
 
       <div className="equip-header">
         <h1 className="equip-header__title">{t.equipment}</h1>
-        <span className="equip-header__count">{t.found} {categories.length} {t.found_categories}</span>
+        <span className="equip-header__count">
+          {t.found} {categories.length} {t.found_categories}
+        </span>
       </div>
 
       <main className="equip-grid">

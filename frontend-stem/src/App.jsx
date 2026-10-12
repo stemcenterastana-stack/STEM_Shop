@@ -1,3 +1,4 @@
+
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 
@@ -76,6 +77,7 @@ import Ulab from './pages/equipment/Ulab'
 import Labdisc from './pages/equipment/Labdisc'
 import Arduino from './pages/equipment/Arduino'
 import LegoSpike from './pages/equipment/LegoSpike'
+import Sensorium from './pages/equipment/Sensorium'
 
 
 import Gos from './pages/decor/Gos'
@@ -172,6 +174,7 @@ export default function App() {
         <Route path="/equipment/labdisc" element={<Labdisc />} />
         <Route path="/equipment/arduino" element={<Arduino />} />
         <Route path="/equipment/legospike" element={<LegoSpike />} />
+        <Route path="/equipment/sensorium" element={<Sensorium />} />
 
         {/* Декор */}
         <Route path="/decor/gos" element={<Gos />} />
