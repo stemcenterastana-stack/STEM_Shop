@@ -18,6 +18,11 @@ export default function CartDrawer() {
   const { user, isAuthenticated } = useAuth()
 
   const [showModal, setShowModal] = useState(false)
+  // ULABS_DELIVERY_EXTENSION_V2: address captured explicitly for cart orders.
+  const [ulabsDelivery, setUlabsDelivery] = useState(() => ({
+    method: 'pickup', city: (() => {try {return localStorage.getItem('stem_city') === 'almaty' ? 'almaty' : 'astana'} catch {return 'astana'}})(), otherCity: '', address: ''
+  }))
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -61,6 +66,8 @@ export default function CartDrawer() {
       }))
 
       const applicationData = {
+        location_city: ulabsDelivery.city === 'other' ? ulabsDelivery.otherCity.trim() : ulabsDelivery.city === 'almaty' ? 'Алматы' : 'Астана',
+        location_address: ulabsDelivery.method === 'delivery' ? ulabsDelivery.address.trim() : (ulabsDelivery.city === 'almaty' ? 'г. Алматы, пр. Аль-Фараби 77/2' : 'г. Астана, ул. Домалак-ана 26'),
         name: formData.name.trim(),
         phone: formData.phone.trim(),
         comment: formData.comment.trim(),
@@ -261,6 +268,18 @@ export default function CartDrawer() {
                   />
                 </div>
 
+                <div className="form-group">
+                  <label htmlFor="cart-delivery-city">Город *</label>
+                  <select id="cart-delivery-city" value={ulabsDelivery.city} onChange={e=>setUlabsDelivery(prev=>({...prev,city:e.target.value,method:e.target.value==='other'?'delivery':prev.method}))}>
+                    <option value="astana">Астана</option><option value="almaty">Алматы</option><option value="other">Другой город</option>
+                  </select>
+                </div>
+                {ulabsDelivery.city === 'other' && <div className="form-group"><label htmlFor="cart-other-city">Название города *</label><input id="cart-other-city" required value={ulabsDelivery.otherCity} onChange={e=>setUlabsDelivery(prev=>({...prev,otherCity:e.target.value}))}/></div>}
+                <div className="form-group"><label htmlFor="cart-delivery-method">Получение *</label><select id="cart-delivery-method" value={ulabsDelivery.method} onChange={e=>setUlabsDelivery(prev=>({...prev,method:e.target.value}))}>
+                  {ulabsDelivery.city !== 'other' && <option value="pickup">Самовывоз</option>}
+                  <option value="delivery">Доставка по Казахстану</option>
+                </select></div>
+                {ulabsDelivery.method === 'delivery' && <div className="form-group"><label htmlFor="cart-delivery-address">Адрес доставки *</label><input id="cart-delivery-address" required value={ulabsDelivery.address} onChange={e=>setUlabsDelivery(prev=>({...prev,address:e.target.value}))} placeholder="Улица, дом, офис" /></div>}
                 <button type="submit" className="btn-submit" disabled={submitting}>
                   {submitting ? 'Отправка...' : 'Отправить заявку'}
                 </button>

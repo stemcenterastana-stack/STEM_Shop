@@ -218,7 +218,9 @@ export default function Navbar() {
         {/* MAIN NAV */}
         <div className="navbar-main">
           <Link to="/" className="navbar-logo">
-            <img src="/img/pagefirst/Vector (89).png" alt="STEM Academia" className="navbar-logo-img" />
+
+<img src="/img/stem-logo.png" alt="STEM Academia" className="navbar-logo-img" />
+
           </Link>
 
           <form className="navbar-search" onSubmit={handleSearch}>
