@@ -1,0 +1,23 @@
+
+name: Test SSH Connection
+
+on:
+  push:
+    branches:
+      - test/ssh-connection
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check SSH connection
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 30s
+          script: |
+            whoami
+            hostname
