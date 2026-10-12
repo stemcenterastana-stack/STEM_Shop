@@ -78,6 +78,7 @@ import Labdisc from './pages/equipment/Labdisc'
 import Arduino from './pages/equipment/Arduino'
 import LegoSpike from './pages/equipment/LegoSpike'
 import Sensorium from './pages/equipment/Sensorium'
+import ULabsCatalog from './pages/equipment/ULabsCatalog'
 
 
 import Gos from './pages/decor/Gos'
@@ -175,6 +176,7 @@ export default function App() {
         <Route path="/equipment/arduino" element={<Arduino />} />
         <Route path="/equipment/legospike" element={<LegoSpike />} />
         <Route path="/equipment/sensorium" element={<Sensorium />} />
+        <Route path="/equipment/ulabs-catalog" element={<ULabsCatalog />} />
 
         {/* Декор */}
         <Route path="/decor/gos" element={<Gos />} />

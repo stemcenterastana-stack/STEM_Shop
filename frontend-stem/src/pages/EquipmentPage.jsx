@@ -11,6 +11,7 @@ export default function EquipmentPage() {
     { title: 'LABDISC', img: '/img/equipment/labdisc.png', path: '/equipment/labdisc' },
     { title: 'ULAB', img: '/img/equipment/ulab.png', path: '/equipment/ulab' },
     { title: 'SENSORIUM', img: '/img/equipment/sensorium.png', path: '/equipment/sensorium' },
+    { title: 'ULABS КАТАЛОГ', img: '/img/equipment/ulabs/products/kit-2024-03.webp', path: '/equipment/ulabs-catalog' },
     { title: t.equipment_soon, img: null, path: '#' },
   ]
 
