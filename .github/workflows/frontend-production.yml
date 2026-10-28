@@ -71,6 +71,10 @@ jobs:
               exit 0
             fi
             test "$DEPLOY_OPERATION" = deploy
+            if [ -n "$(git status --porcelain -- frontend-stem)" ]; then
+              echo 'Production frontend has local changes. Reconcile and back them up before using a clean Git deployment.'
+              exit 1
+            fi
             free_kb=$(df -Pk . | awk 'NR==2 {print $4}')
             test "$free_kb" -gt 2097152
             backup_dir="/var/backups/stem-frontend/$(date -u +%Y%m%dT%H%M%SZ)-$DEPLOY_SHA"
