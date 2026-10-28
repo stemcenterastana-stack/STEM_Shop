@@ -1,0 +1,110 @@
+name: Deploy frontend to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Check SSH/server first, then deploy this revision
+        type: choice
+        options: [check, deploy]
+        default: check
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stem-frontend-production
+  cancel-in-progress: false
+
+jobs:
+  frontend:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend-stem/package-lock.json
+      - name: Verify production build
+        working-directory: frontend-stem
+        env:
+          VITE_API_URL: ''
+          VITE_API_URL_BACKEND: ''
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+      - name: Check or update frontend via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DEPLOY_SHA: ${{ github.sha }}
+          DEPLOY_OPERATION: ${{ inputs.operation }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || '22' }}
+          timeout: 30s
+          command_timeout: 20m
+          envs: DEPLOY_SHA,DEPLOY_OPERATION
+          script: |
+            set -eu
+            cd /var/www/stem
+            case "$(git remote get-url origin)" in
+              https://github.com/stemcenterastana-stack/STEM_Shop.git|git@github.com:stemcenterastana-stack/STEM_Shop.git) ;;
+              *) echo 'Unexpected production repository; stopped'; exit 1 ;;
+            esac
+            frontend_id=$(docker compose ps -q frontend)
+            test -n "$frontend_id"
+            previous_image=$(docker inspect --format '{{.Image}}' "$frontend_id")
+            image_name=$(docker inspect --format '{{.Config.Image}}' "$frontend_id")
+            test "$(docker inspect --format '{{.State.Running}}' "$frontend_id")" = true
+            df -h .
+            docker compose ps
+            git fetch origin master
+            git merge-base --is-ancestor "$DEPLOY_SHA" origin/master
+            echo "Verified frontend revision: $DEPLOY_SHA"
+            if [ "$DEPLOY_OPERATION" = check ]; then
+              echo 'CHECK PASSED: no production containers or files changed'
+              exit 0
+            fi
+            test "$DEPLOY_OPERATION" = deploy
+            free_kb=$(df -Pk . | awk 'NR==2 {print $4}')
+            test "$free_kb" -gt 2097152
+            backup_dir="/var/backups/stem-frontend/$(date -u +%Y%m%dT%H%M%SZ)-$DEPLOY_SHA"
+            mkdir -p "$backup_dir"
+            rollback_tag="stem-frontend-rollback:$DEPLOY_SHA"
+            docker image tag "$previous_image" "$rollback_tag"
+            printf '%s\n' "$previous_image" > "$backup_dir/previous-image.txt"
+            printf '%s\n' "$image_name" > "$backup_dir/image-name.txt"
+            docker inspect "$frontend_id" > "$backup_dir/container.json"
+            build_dir=$(mktemp -d /var/tmp/stem-frontend.XXXXXX)
+            trap 'rm -rf -- "$build_dir"' EXIT
+            git archive "$DEPLOY_SHA" frontend-stem | tar -x -C "$build_dir"
+            docker build --build-arg VITE_API_URL= --tag "$image_name" "$build_dir/frontend-stem"
+            rollback() {
+              echo "Restoring previous frontend image; backup: $backup_dir"
+              docker image tag "$rollback_tag" "$image_name"
+              docker compose up -d --no-deps --no-build frontend
+            }
+            if ! docker compose up -d --no-deps --no-build frontend; then
+              rollback
+              exit 1
+            fi
+            healthy=false
+            for attempt in $(seq 1 15); do
+              frontend_id=$(docker compose ps -q frontend)
+              if docker exec "$frontend_id" wget -q -O /dev/null http://127.0.0.1/; then
+                healthy=true
+                break
+              fi
+              sleep 2
+            done
+            if [ "$healthy" != true ] || ! curl --fail --silent --show-error --retry 3 https://stem-academia.kz/ -o /dev/null; then
+              rollback
+              exit 1
+            fi
+            printf '%s\n' "$DEPLOY_SHA" > "$backup_dir/deployed-revision.txt"
+            echo "DEPLOYED: $DEPLOY_SHA; rollback image: $rollback_tag; backup: $backup_dir"

@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Copy package manifests first for better layer caching
 COPY package*.json ./
-RUN npm install --no-audit --no-fund
+RUN npm ci --no-audit --no-fund
 
 # Copy all source files
 COPY . .

@@ -1,0 +1,126 @@
+/* These effects belong only to the first two homepage scenes. */
+.stem-home-design[data-home-motion] { overflow: clip; }
+.stem-home-design[data-home-motion] :is(.stem-hero__camera, .stem-environment__camera) { will-change: transform; }
+.stem-home-design[data-home-motion] :is(.stem-hero__title, .stem-environment__title) { overflow: clip; }
+
+.stem-home-design[data-home-motion="cinematic"] .stem-environment {
+  min-height: max(790px, 108svh);
+  align-items: start;
+}
+.stem-home-design[data-home-motion="cinematic"] .stem-environment__visual {
+  position: sticky;
+  top: var(--home-motion-top, 170px);
+  height: min(600px, var(--home-motion-photo-height, 600px));
+  margin-bottom: 30px;
+}
+.stem-home-design[data-home-motion="cinematic"] .stem-environment__copy { align-self: center; }
+.stem-home-design[data-home-motion="cinematic"] .stem-hero {
+  min-height: max(580px, calc(100svh - var(--home-motion-top, 170px) + 20px));
+}
+
+/* The travelling photograph is decorative; all real links stay above it. */
+.stem-photo-journey { display: none; pointer-events: none; }
+.stem-home-design[data-home-motion="cinematic"] .stem-photo-journey {
+  display: block;
+  visibility: hidden;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 1000px;
+  height: 1000px;
+  overflow: hidden;
+  box-sizing: border-box;
+  transform-origin: 0 0;
+  contain: layout style;
+}
+.stem-photo-journey__frame { position: absolute; inset: 0; background: #d7e5dc; }
+.stem-photo-journey__frame--start { clip-path: url(#stem-hero-clip); }
+.stem-photo-journey__frame--end { clip-path: url(#stem-environment-clip); opacity: 0; }
+.stem-photo-journey__viewport { width: 100%; height: 100%; overflow: hidden; }
+.stem-photo-journey img {
+  display: block; width: 1536px; height: 1024px; max-width: none;
+  transform-origin: 0 0;
+}
+.stem-home-design[data-photo-journey] :is(.stem-photo-journey, .stem-photo-journey img) { will-change: transform; }
+.stem-home-design[data-photo-journey] .stem-photo-journey__frame { will-change: opacity; }
+.stem-home-design[data-home-motion="cinematic"] :is(.stem-hero, .stem-environment) { z-index: 3; }
+.stem-home-design[data-home-motion="cinematic"] .stem-catalog { z-index: 4; }
+.stem-home-design[data-photo-journey] .stem-environment__copy:focus-within {
+  opacity: 1 !important; translate: none !important;
+}
+.stem-home-design[data-photo-journey] .stem-hero__copy:has(:focus-visible) { opacity: 1 !important; }
+
+/* Keyboard users always get a fully visible, stable navigation target. */
+.stem-home-design .stem-catalog__slot:focus-within > a,
+.stem-home-design .stem-environment__action:focus-within > a {
+  opacity: 1 !important;
+  translate: none !important;
+  scale: 1 !important;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stem-home-design[data-home-motion] .stem-hero__scene {
+    animation: stem-home-photo-enter 1450ms cubic-bezier(.19,.8,.2,1) both;
+  }
+  .stem-home-design[data-home-motion] .stem-hero__media--product .stem-hero__scene {
+    animation-name: stem-home-product-enter;
+    animation-duration: 800ms;
+  }
+  .stem-home-design[data-home-motion] .stem-hero__title-content {
+    transform-origin: left bottom;
+    animation: stem-home-title-enter 1100ms 80ms cubic-bezier(.19,.8,.2,1) both;
+  }
+  .stem-home-design[data-home-motion] .stem-hero__description > span {
+    animation: stem-home-copy-enter 850ms 120ms cubic-bezier(.22,.7,.2,1) both;
+  }
+  .stem-home-design[data-home-motion="compact"] .stem-hero__scene {
+    animation-name: stem-home-product-enter;
+    animation-duration: 650ms;
+  }
+  .stem-home-design[data-home-motion="compact"] :is(.stem-hero__title-content, .stem-hero__description > span) {
+    animation-duration: 600ms;
+  }
+  .stem-home-design[data-home-motion="cinematic"] .stem-hero__slide > .stem-button {
+    animation: stem-home-copy-enter 850ms 200ms cubic-bezier(.22,.7,.2,1) both;
+  }
+  .stem-home-design[data-home-motion] .stem-hero__slide > .stem-button:focus-visible {
+    animation: none;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .stem-home-design[data-home-motion] .stem-environment__feature {
+    transition: translate 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  }
+  .stem-home-design[data-home-motion] .stem-environment__feature:hover {
+    translate: 0 -4px;
+    border-color: #c7d9cd;
+    box-shadow: 0 9px 26px #183f2510;
+  }
+  .stem-home-design[data-home-motion] .stem-environment__icon {
+    transition: color 220ms ease, background-color 220ms ease;
+  }
+  .stem-home-design[data-home-motion] .stem-environment__feature:hover .stem-environment__icon {
+    color: white;
+    background: #075839;
+  }
+}
+
+@keyframes stem-home-photo-enter {
+  from { clip-path: polygon(100% 0, 100% 0, 100% 100%, 82% 100%); transform: scale(1.3) translate3d(3%, 0, 0); opacity: .35; }
+  to { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); transform: scale(1) translate3d(0, 0, 0); opacity: 1; }
+}
+@keyframes stem-home-product-enter {
+  from { transform: translate3d(0, 24px, 0); opacity: .25; }
+  to { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+@keyframes stem-home-title-enter {
+  from { transform: perspective(900px) translate3d(0, 78px, 0) rotateX(12deg); opacity: 0; }
+  to { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+@keyframes stem-home-copy-enter {
+  from { transform: translate3d(0, 24px, 0); opacity: 0; }
+  to { transform: translate3d(0, 0, 0); opacity: 1; }
+}

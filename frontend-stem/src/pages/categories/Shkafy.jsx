@@ -4,7 +4,7 @@ import './Stulya.css'
 
 const subcategories = [
   { title: 'ВСТРОЕННЫЕ ШКАФЫ',   img: '/img/pagesecond/shkafy/vstroenye.png',   path: '/secondpage/shkafy/vstroenye' },
-  { title: 'СТАНДАРТНЫЕ ШКАФЫ',  img: '/img/pagesecond/shkafy/shkaf1_standart.png', path: '/secondpage/shkafy/shkaf1_standart' },
+  { title: 'СТАНДАРТНЫЕ ШКАФЫ',  img: '/img/pagesecond/shkafy/shkaf1_standart.png', path: '/secondpage/shkafy/standartnye' },
 ]
 
 export default function Shkafy() {

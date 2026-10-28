@@ -1,0 +1,31 @@
+.stem-environment { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; gap: 5%; align-items: center; max-width: 1440px; margin: 0 auto; padding: 45px 64px 75px 0; }
+.stem-environment__visual { height: 600px; min-width: 0; }
+.stem-environment__reveal, .stem-environment__viewport, .stem-environment__camera { height: 100%; }
+.stem-environment__viewport { overflow: hidden; border-radius: 0 70px 110px 70px; }
+.stem-environment__media { position: relative; height: 100%; background: #d7e5dc; padding: 22px 24px 28px 0; border-radius: 0 110px 140px 0; clip-path: polygon(0 0, 75% 0, 100% 55%, 73% 100%, 16% 100%, 0 65%); }
+.stem-environment__media img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 43% center; border-radius: 0 70px 110px 70px; }
+.stem-environment__media { clip-path: url(#stem-environment-clip); }
+.stem-environment__copy { position: relative; min-width: 0; padding: 12px 0; }
+.stem-environment__title { font-size: clamp(34px, 3.5vw, 53px); line-height: 1.08; letter-spacing: -1.7px; font-weight: 750; color: #101b29; margin: 24px 0 18px; }
+.stem-environment__title span { color: var(--stem-green); }
+.stem-environment__title > .stem-environment__title-content { display: block; color: inherit; }
+.stem-environment__description > span { display: block; }
+.stem-environment__feature-slot { min-width: 0; }
+.stem-environment__feature-slot > .stem-environment__feature { height: 100%; }
+.stem-environment__description { font-size: 16px; line-height: 1.6; color: #535d63; max-width: 500px; margin-bottom: 24px; }
+.stem-environment__features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0 0 28px; }
+.stem-environment__feature { display: flex; align-items: flex-start; gap: 12px; min-width: 0; padding: 17px 14px; border: 1px solid #f1f4ef; border-radius: 15px; background: #ffffffe6; }
+.stem-environment__icon { display: grid; place-items: center; flex-shrink: 0; width: 43px; height: 43px; border-radius: 50%; background: #e6eee8; color: var(--stem-green); }
+.stem-environment__feature h3 { font-size: 13px; font-weight: 600; line-height: 1.4; color: #18251e; margin: 2px 0 7px; }
+.stem-environment__feature p { font-size: 12px; line-height: 1.55; color: #5a645d; margin: 0; }
+@media (max-width: 1100px) { .stem-environment { gap: 4%; padding-right: 32px; } .stem-environment__visual { height: 580px; } .stem-environment__title { font-size: 39px; } .stem-environment__feature { gap: 8px; padding: 13px 10px; } .stem-environment__icon { width: 34px; height: 34px; } }
+@media (max-width: 900px) { .stem-environment { grid-template-columns: .85fr 1fr; } .stem-environment__features { grid-template-columns: 1fr; } .stem-environment__title { font-size: 33px; } .stem-environment__visual { height: 650px; } }
+@media (max-width: 760px) {
+  .stem-environment { grid-template-columns: 1fr; gap: 24px; padding: 20px 24px 50px; }
+  .stem-environment__copy { grid-row: 1; }
+  .stem-environment__title { font-size: clamp(32px, 6vw, 44px); }
+  .stem-environment__features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stem-environment__feature { padding: 14px 12px; }
+  .stem-environment__visual { height: 370px; margin-left: -24px; width: calc(100% + 24px); }
+}
+@media (max-width: 420px) { .stem-environment { padding-left: 20px; padding-right: 20px; } .stem-environment__features { grid-template-columns: 1fr; gap: 10px; } .stem-environment__feature { gap: 14px; } .stem-environment__icon { width: 42px; height: 42px; } .stem-environment__visual { height: 300px; margin-left: -20px; width: calc(100% + 20px); } }

@@ -1,9 +1,14 @@
 import { Link, useLocation } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
 import './FirstPage.css'
 import HeroSlider from '../components/HeroSlider'
 import CategoryGrid from '../components/CategoryGrid'
+import HomeEnvironment from '../components/HomeEnvironment'
+import HomePackages from '../components/HomePackages'
+import useHomeMotion from '../components/useHomeMotion'
+import HomePhotoJourney from '../components/HomePhotoJourney'
+import '../components/HomeMotion.css'
 import { useLang } from '../i18n/LanguageContext'
 import Icon from '../components/Icons'
 
@@ -52,15 +57,36 @@ const INSTRUCTIONS = [
 export default function FirstPage() {
   const { t } = useLang()
   const packagesRef = useRef(null)
+  const homeRef = useRef(null)
+  useHomeMotion(homeRef)
 
   const location = useLocation()
+
+  // A plain homepage visit always starts with the opening scene, including reloads
+  // and clicking the logo while already here. Explicit section links still work.
+  useLayoutEffect(() => {
+    const previousRestoration = window.history.scrollRestoration
+    window.history.scrollRestoration = 'manual'
+    const showOpening = () => {
+      if (!location.hash) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }
+    showOpening()
+    window.addEventListener('pageshow', showOpening)
+    return () => {
+      window.removeEventListener('pageshow', showOpening)
+      window.history.scrollRestoration = previousRestoration
+    }
+  }, [location])
 
   // Scroll to anchor if URL has a hash (e.g. /#packages)
   useEffect(() => {
     if (location.hash) {
       const el = document.getElementById(location.hash.slice(1))
       if (el) {
-        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100)
+        const timer = setTimeout(() => el.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        }), 100)
+        return () => clearTimeout(timer)
       }
     }
   }, [location])
@@ -97,10 +123,24 @@ export default function FirstPage() {
         </script>
       </Helmet>
       
-      <div className="page">
+      <div className="page stem-home">
       {/* Hero и категории */}
-      <HeroSlider />
-      <CategoryGrid />
+      <div className="stem-home-design" ref={homeRef}>
+        <svg className="stem-home-shapes" aria-hidden="true" focusable="false" width="0" height="0">
+          <defs>
+            <clipPath id="stem-hero-clip" clipPathUnits="objectBoundingBox">
+              <path d="M .25 0 H 1 V .77 Q 1 .85 .96 .91 L .91 .98 Q .89 1 .84 1 H .28 Q .24 1 .21 .95 L .16 .86 Q .13 .80 .07 .80 Q 0 .80 0 .69 Q 0 .65 .025 .59 Z" />
+            </clipPath>
+            <clipPath id="stem-environment-clip" clipPathUnits="objectBoundingBox">
+              <path d="M 0 0 H .68 Q .76 0 .80 .12 L .97 .48 Q 1 .55 .97 .63 L .84 .90 Q .79 1 .69 1 H .26 Q .19 1 .15 .91 L .015 .56 Q 0 .52 0 .45 Z" />
+            </clipPath>
+          </defs>
+        </svg>
+        <HomePhotoJourney />
+        <HeroSlider />
+        <HomeEnvironment />
+        <CategoryGrid />
+      </div>
 
       {/* AI Визуализация — CTA секция */}
       <section className="visualize-cta-section">
@@ -115,47 +155,8 @@ export default function FirstPage() {
         </div>
       </section>
 
-      {/* Breadcrumb */}
-      <div className="breadcrumb">{t.design_breadcrumb}</div>
-
       {/* Пакеты дизайна */}
-      <main className="packages" id="packages" ref={packagesRef}>
-        {/* STANDARD */}
-        <div className="package package--s">
-          <div className="package__content">
-            <h2 className="package__title">Standard</h2>
-            <p className="package__desc">{t.pkg_s_desc}</p>
-            <ul className="package__list">
-              {t.pkg_s_items.map((item, i) => <li key={i}>{item}</li>)}
-            </ul>
-          </div>
-          <img src="/img/pagefirst/Слой1.png" alt="Стул" className="package__img" />
-        </div>
-
-        {/* COMFORT */}
-        <div className="package package--m">
-          <div className="package__content">
-            <h2 className="package__title">Comfort</h2>
-            <p className="package__desc">{t.pkg_m_desc}</p>
-            <ul className="package__list">
-              {t.pkg_m_items.map((item, i) => <li key={i}>{item}</li>)}
-            </ul>
-          </div>
-          <img src="/img/pagefirst/plant.png" alt="Растение" className="package__img" />
-        </div>
-
-        {/* PREMIUM */}
-        <div className="package package--l">
-          <div className="package__content">
-            <h2 className="package__title">Premium</h2>
-            <p className="package__desc">{t.pkg_l_desc}</p>
-            <ul className="package__list">
-              {t.pkg_l_items.map((item, i) => <li key={i}>{item}</li>)}
-            </ul>
-          </div>
-          <img src="/img/pagefirst/F5.png" alt="Кресло" className="package__img" />
-        </div>
-      </main>
+      <HomePackages packagesRef={packagesRef} />
 
       {/* Приказ №70 */}
       <section className="order70-section">
